@@ -8,12 +8,13 @@ public class WordCount {
 
     public static final String SENTENCE =
             " Nel   mezzo del cammin  di nostra  vita " +
-            "mi  ritrovai in una  selva oscura" +
-            " che la  dritta via era   smarrita ";
+                    "mi  ritrovai in una  selva oscura" +
+                    " che la  dritta via era   smarrita ";
 
     public static void main(String[] args) {
-        System.out.println("Found " + countWordsIteratively(SENTENCE) + " words");
-        System.out.println("Found " + countWords(SENTENCE) + " words");
+        System.out.println("Found - countWordsIteratively   " + countWordsIteratively(SENTENCE) + " words");
+        System.out.println("Found - countWordsWithSpliterator   " + countWordsWithSpliterator(SENTENCE) + " words");
+        System.out.println("Found - countWordsWithOutSpliterator    " + countWordsWithOutSpliterator(SENTENCE) + " words");
     }
 
     public static int countWordsIteratively(String s) {
@@ -30,9 +31,17 @@ public class WordCount {
         return counter;
     }
 
-    public static int countWords(String s) {
-        //Stream<Character> stream = IntStream.range(0, s.length())
-        //                                    .mapToObj(SENTENCE::charAt).parallel();
+
+    public static int countWordsWithOutSpliterator(String s){
+
+        Stream<Character> parallelStream = IntStream.range(0, s.length())
+                .mapToObj(SENTENCE::charAt).parallel();
+
+        return countWords(parallelStream);
+
+    }
+
+    public static int countWordsWithSpliterator(String s) {
         Spliterator<Character> spliterator = new WordCounterSpliterator(s);
         Stream<Character> stream = StreamSupport.stream(spliterator, true);
 
@@ -41,8 +50,8 @@ public class WordCount {
 
     private static int countWords(Stream<Character> stream) {
         WordCounter wordCounter = stream.reduce(new WordCounter(0, true),
-                                                WordCounter::accumulate,
-                                                WordCounter::combine);
+                WordCounter::accumulate,
+                WordCounter::combine);
         return wordCounter.getCounter();
     }
 
@@ -59,11 +68,12 @@ public class WordCount {
             if (Character.isWhitespace(c)) {
                 return lastSpace ? this : new WordCounter(counter, true);
             } else {
-                return lastSpace ? new WordCounter(counter+1, false) : this;
+                return lastSpace ? new WordCounter(counter + 1, false) : this;
             }
         }
 
         public WordCounter combine(WordCounter wordCounter) {
+//          lastSpace是采用那个WordCounter的lastSpace呢？
             return new WordCounter(counter + wordCounter.counter, wordCounter.lastSpace);
         }
 

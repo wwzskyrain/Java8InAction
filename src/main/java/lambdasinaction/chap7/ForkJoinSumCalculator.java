@@ -33,7 +33,7 @@ public class ForkJoinSumCalculator extends RecursiveTask<Long> {
         ForkJoinSumCalculator leftTask = new ForkJoinSumCalculator(numbers, start, start + length/2);
         leftTask.fork();
         ForkJoinSumCalculator rightTask = new ForkJoinSumCalculator(numbers, start + length/2, end);
-        Long rightResult = rightTask.compute();
+        Long rightResult = rightTask.compute(); //右分支在当前线程中计算；当然右分枝也会进行再次分支。
         Long leftResult = leftTask.join();
         return leftResult + rightResult;
     }
