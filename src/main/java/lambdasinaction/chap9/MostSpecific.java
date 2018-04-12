@@ -1,6 +1,6 @@
 package lambdasinaction.chap9;
 
-public class MostSpecific{
+public class MostSpecific {
 
     public static void main(String... args) {
         new C().hello();
@@ -8,23 +8,26 @@ public class MostSpecific{
         new G().hello();
     }
 
-    static interface A{
+    static interface A {
         public default void hello() {
             System.out.println("Hello from A");
         }
     }
 
-    static interface B extends A{
+    static interface B extends A {
         public default void hello() {
             System.out.println("Hello from B");
         }
     }
 
-    static class C implements B, A {}
+    static class C implements B, A {
+    }
 
-    static class D implements A{}
+    static class D implements A {
+    }
 
-    static class E extends D implements B, A{}
+    static class E extends D implements B, A {
+    }
 
     static class F implements B, A {
         public void hello() {
@@ -32,7 +35,8 @@ public class MostSpecific{
         }
     }
 
-    static class G extends F implements B, A{}
+    static class G extends F implements B, A {
+    }
 
 }
 
