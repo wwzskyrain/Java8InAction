@@ -35,18 +35,20 @@ public class ReadPositiveIntParam {
                 if (i > 0) {
                     return i;
                 }
-            } catch (NumberFormatException nfe) { }
+            } catch (NumberFormatException nfe) {
+            }
         }
         return 0;
     }
 
     public static int readDurationWithOptional(Properties props, String name) {
         return ofNullable(props.getProperty(name))
-                .flatMap(ReadPositiveIntParam::s2i)
-                .filter(i -> i > 0).orElse(0);
+                .flatMap(ReadPositiveIntParam::string2Integer)
+                .filter(duration -> duration > 0)
+                .orElse(0);
     }
 
-    public static Optional<Integer> s2i(String s) {
+    public static Optional<Integer> string2Integer(String s) {
         try {
             return of(Integer.parseInt(s));
         } catch (NumberFormatException e) {
